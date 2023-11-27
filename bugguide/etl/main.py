@@ -1,11 +1,11 @@
 import time
 import logging
 import requests
+import pandas as pd
+import json
 from sqlalchemy import create_engine
 from db_config import db_credentials
-from io import BytesIO
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -15,74 +15,39 @@ logging.basicConfig(
     ]
 )
 
-def download_data(url):
-    """Download data from a given URL."""
+
+def fetch_data_from_api(url):
     response = requests.get(url)
     response.raise_for_status()
-    return response.content
+    return response.json()  # Assuming the API returns JSON data
 
-def concatenate_data(urls):
-    """Concatenate data from a list of URLs."""
-    combined_data = b""
-    for url in urls:
-        logging.info(f"Downloading data from {url}")
-        combined_data += download_data(url)
-    return combined_data
 
-def insert_data(data, db_creds):
-    """Insert data into a database."""
+def process_and_insert_data(api_data, db_creds):
     u, p, h, port, db = db_creds.values()
     table_name = "bugguide"
-    data_io = BytesIO(data)
+
+    # Convert the JSON data to a Pandas DataFrame
+    df = pd.DataFrame(api_data)
+
+    # Connecting to the database and inserting the data
     with create_engine(f"postgresql://{u}:{p}@{h}:{port}/{db}").connect() as connection:
-        connection.execute(f"COPY {table_name} FROM STDIN", data_io)
+        df.to_sql(table_name, connection, if_exists='append', index=False, chunksize=500)
+
 
 def main():
-    """Main function to download, concatenate, and insert data."""
     start_time = time.time()
+    api_url = "https://bugs.verfasor.com/api"
 
-    # List of API URLs
-    api_urls = [
-        "https://api.bugguide.net/taxonomy/Blattodea.txt"
-        "https://api.bugguide.net/taxonomy/Coleoptera.txt"
-        "https://api.bugguide.net/taxonomy/Dermaptera.txt"
-        "https://api.bugguide.net/taxonomy/Diptera.txt"
-        "https://api.bugguide.net/taxonomy/Embiidina.txt"
-        "https://api.bugguide.net/taxonomy/Ephemeroptera.txt"
-        "https://api.bugguide.net/taxonomy/Hemiptera.txt"
-        "https://api.bugguide.net/taxonomy/Hymenoptera.txt"
-        "https://api.bugguide.net/taxonomy/Lepidoptera.txt"
-        "https://api.bugguide.net/taxonomy/Mantodea.txt"
-        "https://api.bugguide.net/taxonomy/Mecoptera.txt"
-        "https://api.bugguide.net/taxonomy/Megaloptera.txt"
-        "https://api.bugguide.net/taxonomy/Microcoryphia.txt"
-        "https://api.bugguide.net/taxonomy/Neuroptera.txt"
-        "https://api.bugguide.net/taxonomy/Notoptera.txt"
-        "https://api.bugguide.net/taxonomy/Odonata.txt"
-        "https://api.bugguide.net/taxonomy/Orthoptera.txt"
-        "https://api.bugguide.net/taxonomy/Phasmida.txt"
-        "https://api.bugguide.net/taxonomy/Plecoptera.txt"
-        "https://api.bugguide.net/taxonomy/Protorthoptera.txt"
-        "https://api.bugguide.net/taxonomy/Psocodea.txt"
-        "https://api.bugguide.net/taxonomy/Raphidioptera.txt"
-        "https://api.bugguide.net/taxonomy/Siphonaptera.txt"
-        "https://api.bugguide.net/taxonomy/Strepsiptera.txt"
-        "https://api.bugguide.net/taxonomy/Thysanoptera.txt"
-        "https://api.bugguide.net/taxonomy/Trichoptera.txt"
-        "https://api.bugguide.net/taxonomy/Zoraptera.txt"
-        "https://api.bugguide.net/taxonomy/Zygentoma.txt"
-    ]
+    logging.info("Fetching data from API...")
+    api_data = fetch_data_from_api(api_url)
 
-    # Concatenate data from all URLs
-    concatenated_data = concatenate_data(api_urls)
-
-    # Insert data into database
-    logging.info("Inserting data into database...")
-    insert_data(concatenated_data, db_credentials)
+    logging.info("Processing and inserting data...")
+    process_and_insert_data(api_data, db_credentials)
 
     end_time = time.time()
-    logging.info(f"The script took {end_time - start_time:.2f} seconds to run.")
+    duration = end_time - start_time
+    logging.info(f"The script took {duration:.2f} seconds to run.")
 
-# Execute the main function
+
 if __name__ == "__main__":
     main()

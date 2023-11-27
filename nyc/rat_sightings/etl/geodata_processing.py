@@ -8,7 +8,6 @@ import logging
 import time
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text  # Import the text function from sqlalchemy.sql
-from db_config import db_credentials
 
 # Configure logging
 logging.basicConfig(
@@ -34,7 +33,8 @@ def test_db_connection(db_creds):
     engine = create_db_engine(db_creds)
     try:
         with engine.connect() as conn:
-            result = conn.execute("SELECT COUNT(*) FROM rat_sightings")
+            from sqlalchemy.sql import text
+            result = conn.execute(text("SELECT COUNT(*) FROM rat_sightings"))
             for row in result:
                 print(row)
     except Exception as e:
