@@ -17,4 +17,4 @@ To use these ETL scripts, ensure you have the necessary environment and dependen
 
 ```bash
 # General usage command
-python main.py
+python3 main.py
