@@ -7,7 +7,7 @@ import requests
 import logging
 import time
 from sqlalchemy import create_engine
-from sqlalchemy.sql import text  # Import the text function from sqlalchemy.sql
+
 
 # Configure logging
 logging.basicConfig(
@@ -34,32 +34,16 @@ def test_db_connection(db_creds):
     try:
         with engine.connect() as conn:
             from sqlalchemy.sql import text
-            result = conn.execute(text("SELECT COUNT(*) FROM rat_sightings"))
+            result = conn.execute(text("geojson_url"))
             for row in result:
                 print(row)
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
-def get_latest_date(db_creds):
-    """Get the latest date of data entry in the database."""
-    engine = create_db_engine(db_creds)
-    try:
-        with engine.connect() as connection:
-            latest_date_query = text("SELECT MAX(created_date) FROM rat_sightings")
-            result = connection.execute(latest_date_query)
-            latest_date = result.scalar()
-            return latest_date
-    except Exception as e:
-        logging.error(f"An error occurred while fetching the latest date: {e}")
-        return None
-
-
-def fetch_data(url, page_size, page, start_date=None):
+def fetch_data(url, page_size, page):
     """Fetch GeoJSON data from the provided URL starting from the latest date."""
     params = {"$limit": page_size, "$offset": (page - 1) * page_size}
-    if start_date:
-        params["start_date"] = start_date  # Modify as per your API's parameter
     response = requests.get(url, params=params)
     response.raise_for_status()
     return response.json()
@@ -96,12 +80,11 @@ def fetch_and_insert_geodata(geojson_url, page_size, delay, db_creds):
     """Fetch and insert GeoJSON data by pagination."""
     page = 1
     total_records_fetched = 0
-    latest_date = get_latest_date(db_creds)
 
     while True:
         logging.info(f"Fetching page {page}...")
         try:
-            geojson_data = fetch_data(geojson_url, page_size, page, latest_date)
+            geojson_data = fetch_data(geojson_url, page_size, page)
             if not geojson_data['features']:
                 logging.info("No more data to fetch. Exiting loop.")
                 break
@@ -130,7 +113,3 @@ def fetch_and_insert_geodata(geojson_url, page_size, delay, db_creds):
         time.sleep(delay)
 
     return total_records_fetched
-
-
-# Uncomment to test database connection
-# test_db
