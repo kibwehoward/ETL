@@ -10,7 +10,7 @@ def main():
     """Main function to execute the script."""
     start_time = time.time()
     geojson_url = "https://data.cityofnewyork.us/resource/3q43-55fe.geojson"
-    page_size = 100000
+    page_size = 1000
     delay = 1
 
     total_records_fetched = fetch_and_insert_geodata(geojson_url, page_size, delay, db_credentials)
