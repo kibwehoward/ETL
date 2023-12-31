@@ -4,7 +4,7 @@ from tqdm import tqdm
 url = "https://data.cityofnewyork.us/api/views/erm2-nwe9/rows.csv?date=20231229&accessType=DOWNLOAD"
 response = requests.get(url, stream=True)
 
-with open("311_service_requests.csv", "wb") as file, tqdm(
+with open("service_requests.csv", "wb") as file, tqdm(
         desc="Downloading 311 Data",
         total=int(response.headers.get('content-length', 0)),
         unit='iB',

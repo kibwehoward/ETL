@@ -27,7 +27,7 @@ def download_excel(url):
 
 def process_and_insert_data(excel_data, db_creds):
     u, p, h, port, db = db_creds.values()
-    table_name = "appril"
+    table_name = "excel_etl"
 
     excel_data_io = BytesIO(excel_data)
 

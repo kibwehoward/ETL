@@ -68,7 +68,7 @@ def process_and_insert_data(geojson_data, page, db_creds):
         'ogr2ogr',
         '-f', 'PostgreSQL',
         connection_string,
-        '-nln', 'rat_sightings',
+        '-nln', 'geojson_etl',
         '-append',
         temp_file_geopackage
     ]

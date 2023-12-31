@@ -2,7 +2,7 @@ import psycopg2
 from db_config import db_credentials
 
 
-def get_pests_list():
+def get_sites_list():
     # Database connection parameters
     u, p, h, port, db = db_credentials.values()
 
@@ -14,8 +14,8 @@ def get_pests_list():
 
         cur = conn.cursor()
 
-        # Executing a query to fetch the "PESTS" column
-        cur.execute('SELECT "PESTS" FROM appril')
+        # Executing a query to fetch the "SITES" column
+        cur.execute('SELECT "SITES" FROM excel_etl')
 
         # Fetching all rows from the table
         rows = cur.fetchall()
@@ -24,28 +24,28 @@ def get_pests_list():
         cur.close()
         conn.close()
 
-        # Extracting and alphabetically sorting the values from the "PESTS" column
-        pests_set = set()  # Use a set to store unique values
+        # Extracting and alphabetically sorting the values from the "SITES" column
+        sites_set = set()  # Use a set to store unique values
 
         for row in rows:
             value = row[0]
             if value is not None:
-                pests_set.update(value.split(','))  # Add values to the set
+                sites_set.update(value.split(','))  # Add values to the set
 
-        pests_list = sorted(pests_set)  # Sort the unique values
+        sites_list = sorted(sites_set)  # Sort the unique values and convert to a list
 
-        return pests_list
+        return sites_list
     except psycopg2.Error as e:
         print(f"Error: {e}")
         return None
 
 
 def main():
-    pests_list = get_pests_list()
+    sites_list = get_sites_list()
 
-    if pests_list is not None:
-        for pest in pests_list:
-            print(pest)
+    if sites_list is not None:
+        for site in sites_list:
+            print(site)
 
 
 if __name__ == "__main__":

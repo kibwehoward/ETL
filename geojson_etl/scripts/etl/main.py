@@ -2,14 +2,14 @@
 
 import time
 import logging
-from rat_sightings.scripts.etl.geodata_processing import fetch_and_insert_geodata
+from geojson_etl.scripts.etl.geodata_processing import fetch_and_insert_geodata
 from db_config import db_credentials
 
 
 def main():
     """Main function to execute the script."""
     start_time = time.time()
-    geojson_url = "https://data.cityofnewyork.us/resource/erm2-nwe9.geojson"
+    geojson_url = "https://data.cityofnewyork.us/resource/3q43-55fe.geojson"
     page_size = 1000
     delay = 1
 
