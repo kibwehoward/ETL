@@ -38,7 +38,7 @@ def process_and_insert_data(excel_data, db_creds):
 
 def main():
     start_time = time.time()
-    excel_url = "path/to/static/file.xlsx"    # 'path_to_static_xlsx_file.xlsx' is a temporary name. Change it to match the file's actual URL
+    excel_url = "path/to/static/file.xlsx"    # 'path/to/static/file.xlsx' is a temporary name. Change it to match the file's actual URL
 
     logging.info("Downloading Excel file...")
     excel_data = download_excel(excel_url)
