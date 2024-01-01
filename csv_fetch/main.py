@@ -1,11 +1,11 @@
 import requests
 from tqdm import tqdm
 
-url = "https://data.cityofnewyork.us/api/views/erm2-nwe9/rows.csv?date=20231229&accessType=DOWNLOAD"
+url = "path/to/static/CSV/file.csv"       # 'path/to/static/CSV/file.csv' is a temporary name. Change it to match the file's actual URL
 response = requests.get(url, stream=True)
 
-with open("service_requests.csv", "wb") as file, tqdm(
-        desc="Downloading 311 Data",
+with open("file_name.csv", "wb") as file, tqdm(        # 'file_name.csv' is a temporary name. Change it to match the actual file name
+        desc="Downloading File",
         total=int(response.headers.get('content-length', 0)),
         unit='iB',
         unit_scale=True
