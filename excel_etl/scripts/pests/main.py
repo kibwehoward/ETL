@@ -15,7 +15,7 @@ def get_pests_list():
         cur = conn.cursor()
 
         # Executing a query to fetch the "PESTS" column
-        cur.execute('SELECT "PESTS" FROM excel_etl')
+        cur.execute('SELECT "column_name" FROM excel_etl')
 
         # Fetching all rows from the table
         rows = cur.fetchall()
