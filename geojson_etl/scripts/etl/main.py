@@ -9,7 +9,7 @@ from db_config import db_credentials
 def main():
     """Main function to execute the script."""
     start_time = time.time()
-    geojson_url = "https://data.cityofnewyork.us/resource/3q43-55fe.geojson"
+    geojson_url = "geojson_api_url.geojson"
     page_size = 1000
     delay = 1
 
