@@ -68,7 +68,7 @@ def process_and_insert_data(geojson_data, page, db_creds):
         'ogr2ogr',
         '-f', 'PostgreSQL',
         connection_string,
-        '-nln', 'geojson_etl',
+        '-nln', 'geojson_etl',   # 'geojson_etl' is a temporary name. Change it to match the actual table name. 
         '-append',
         temp_file_geopackage
     ]
