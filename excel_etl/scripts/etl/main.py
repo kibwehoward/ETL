@@ -27,7 +27,7 @@ def download_excel(url):
 
 def process_and_insert_data(excel_data, db_creds):
     u, p, h, port, db = db_creds.values()
-    table_name = "excel_etl"
+    table_name = "excel_etl"    # 'excel_etl' is a temporary name. Change it to match the actual table name
 
     excel_data_io = BytesIO(excel_data)
 
@@ -38,7 +38,7 @@ def process_and_insert_data(excel_data, db_creds):
 
 def main():
     start_time = time.time()
-    excel_url = "https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx"
+    excel_url = "path_to_static_xlsx_file.xlsx"    # 'path_to_static_xlsx_file.xlsx' is a temporary name. Change it to match the file's actual URL
 
     logging.info("Downloading Excel file...")
     excel_data = download_excel(excel_url)
