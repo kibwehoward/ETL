@@ -9,7 +9,7 @@ from db_config import db_credentials
 def main():
     """Main function to execute the script."""
     start_time = time.time()
-    geojson_url = "geojson_api_url.geojson"
+    geojson_url = "geojson_api_url.geojson"    # 'geojson_api_url.geojson' is a temporary name. Change it to match the API's actual URL.
     page_size = 1000
     delay = 1
 
